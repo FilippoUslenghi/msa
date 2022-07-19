@@ -360,3 +360,6 @@ Temporary Items
 # .zip files
 *.zip
 
+# Dataset
+CatsDogs/
+dataset/
