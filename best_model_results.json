@@ -1,0 +1,8 @@
+{
+    "filters_coeff": "incremental",
+    "n_filters": 64,
+    "kernel_size": 3,
+    "n_epochs": 20,
+    "mean_zero_one_loss": 534,
+    "std_zero_one_loss": 31
+}
