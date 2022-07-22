@@ -24,7 +24,7 @@ def decode_img(img):
     # Convert the compressed string to a 3D uint8 tensor
     img = tf.io.decode_jpeg(img, channels=3)
     # Resize the image to the desired size
-    return tf.image.resize(img, [150, 150])
+    return tf.image.resize(img, [256, 256])
 
 
 def process_path(file_path):
@@ -136,7 +136,7 @@ for filters_coeff in filters_coeffs:
 
                     model = tf.keras.Sequential([
                         tf.keras.layers.Rescaling(1./255),
-                        tf.keras.layers.Conv2D(n_filters, kernel_size, activation=tf.nn.relu),
+                        tf.keras.layers.Conv2D(n_filters, kernel_size, activation=tf.nn.relu, input_shape=(256, 256 ,3)),
                         tf.keras.layers.MaxPooling2D(),
                         tf.keras.layers.Conv2D(n_filters * (1, 2)[filters_coeff=='incremental'], kernel_size, activation=tf.nn.relu),
                         tf.keras.layers.MaxPooling2D(),
