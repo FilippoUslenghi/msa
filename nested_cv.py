@@ -37,7 +37,6 @@ def process_path(file_path):
 
 # Configure dataset for performance
 def configure_for_performance(ds):
-    ds = ds.cache()
     ds = ds.shuffle(buffer_size=1000)
     ds = ds.batch(batch_size)
     ds = ds.prefetch(buffer_size=tf.data.AUTOTUNE)
