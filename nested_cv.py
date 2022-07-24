@@ -176,6 +176,3 @@ for filters_coeff in filters_coeffs:
 
 best_model = min(internal_results, key=lambda x: x['zero_one_loss'])
 print(f'Best hyper-parameters: {best_model}')
-
-with open('best_model_results.json', 'w') as f:
-    json.dump(best_model, f, indent=4)
