@@ -127,10 +127,6 @@ for filters_coeff in filters_coeffs:
                 internal_splits = k_fold.split(train_paths)
                 tmp_results = []
                 
-                
-                if internal_count<21: 
-                    internal_count+=1
-                    continue
                 for internal_train_index, internal_test_index in internal_splits:  # Interal cross validation
                     internal_train, internal_test = prepare_data(train_paths, internal_train_index, internal_test_index)
 
@@ -180,53 +176,6 @@ for filters_coeff in filters_coeffs:
 
 best_model = min(internal_results, key=lambda x: x['zero_one_loss'])
 print(f'Best hyper-parameters: {best_model}')
-
-# Run the external cross validation of the best predictor found
-external_results = []
-hyper_parameters = SimpleNamespace(**best_model)
-for train_index, test_index in k_splits:
-    train, test = prepare_data(subsampled_data_paths, train_index, test_index)
-    model = tf.keras.Sequential([
-        tf.keras.layers.Rescaling(1./255),
-        tf.keras.layers.Conv2D(hyper_parameters.n_filters, hyper_parameters.kernel_size, activation=tf.nn.relu),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(hyper_parameters.n_filters * (1, 2)[hyper_parameters.filters_coeff=='incremental'], hyper_parameters.kernel_size, activation=tf.nn.relu),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Conv2D(hyper_parameters.n_filters * (1, 4)[hyper_parameters.filters_coeff=='incremental'], hyper_parameters.kernel_size, activation=tf.nn.relu),
-        tf.keras.layers.MaxPooling2D(),
-        tf.keras.layers.Flatten(),
-        tf.keras.layers.Dense(256, activation=tf.nn.relu),
-        tf.keras.layers.Dense(1, activation='sigmoid')
-    ])
-
-    model.compile(
-        optimizer='adam',
-        loss='binary_crossentropy',
-        metrics=['accuracy']
-    )
-
-    history = model.fit(
-        train,
-        epochs=hyper_parameters.n_epochs,
-        verbose=0
-    )
-
-    external_loss = zero_one_loss(test, len(test_index))
-    external_results.append(external_loss)
-
-    # Clear the model
-    del model
-    tf.keras.backend.clear_session()
-    gc.collect()
-
-mean_zero_one_loss = np.round(np.mean(external_results), decimals=0)
-std_zero_one_loss = np.round(np.std(external_results), decimals=0)
-print(f'Zero one loss of best model: {int(mean_zero_one_loss)}, with std of {int(std_zero_one_loss)} samples.')
-
-# save best model in json file
-del best_model['zero_one_loss']
-best_model['mean_zero_one_loss'] = int(mean_zero_one_loss)
-best_model['std_zero_one_loss'] = int(std_zero_one_loss)
 
 with open('best_model_results.json', 'w') as f:
     json.dump(best_model, f, indent=4)
