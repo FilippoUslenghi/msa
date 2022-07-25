@@ -193,7 +193,7 @@
         "n_filters": 16,
         "kernel_size": 3,
         "n_epochs": 10,
-        "zero_one_loss": 426.0
+        "zero_one_loss": 526.0
     },
     {
         "filters_coeff": "incremental",
