@@ -78,11 +78,11 @@ def zero_one_loss(dataset, dataset_size):
     return int(round(zero_one_loss, ndigits=0))
     
 def save_results(results):
-    with open('results.json', 'w') as f:
+    with open('../results.json', 'w') as f:
         json.dump(results, f, indent=4)
 
 # Define the directory of the dataset
-data_dir = pathlib.Path('CatsDogs/')
+data_dir = pathlib.Path('../CatsDogs/')
 
 # Remove corrupted files
 os.system("rm CatsDogs/Cats/666.jpg CatsDogs/Dogs/11702.jpg CatsDogs/Dogs/11410.jpg")
